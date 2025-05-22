@@ -1,7 +1,7 @@
 # Cafetière
 
 > [!NOTE]
-> V0.1 -
+> V1.0 -
 > 22/05/2025 -
 > Roicobraz
 

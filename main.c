@@ -10,7 +10,7 @@ int main(int argc, char const *argv[])
 
     possibleActions();
     int response;
-    while(response != 7)
+    while(response != 8)
     {
         scanf("%d", &response);
         switch (response)
