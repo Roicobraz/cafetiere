@@ -13,6 +13,7 @@ typedef struct Water Water;
 struct Water
 {
     int quantity;
+    int const QUANTITY_MAX;
     int temperature;
 };
 
@@ -26,14 +27,16 @@ struct Cafetiere
     int hasLimestone;
 };
 
-void turnOn(Cafetiere *cafetiere);
-void waterHeating();
-
-void putCup(Cup cup);
-void addWater(Cafetiere *cafetiere, int waterDose);
-int selectDose();
-void cofeeFlow();
+void turnOn(Cafetiere *cafetiere, int quantityCup);
+void turnOff(Cafetiere *cafetiere);
 
 void takeCup(Cup cup);
+void putCup(Cup cup);
 
-void turnOff(Cafetiere *cafetiere);
+void waterHeating(Cafetiere *cafetiere);
+void addWater(Cafetiere *cafetiere);
+
+void selectDose(Cafetiere *cafetiere);
+void cofeeFlow(Cafetiere *cafetiere, Cup *cup, int const QUANTITY_CUP);
+
+void possibleActions();
