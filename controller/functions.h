@@ -6,14 +6,14 @@ struct Cup
 {
     int empty;
     int isUnderCafetiere;
-    int const QUANTITY;
+    int QUANTITY;
 };
 
 typedef struct Water Water;
 struct Water
 {
     int quantity;
-    int const QUANTITY_MAX;
+    int QUANTITY_MAX;
     int temperature;
 };
 
