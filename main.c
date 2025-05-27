@@ -5,43 +5,57 @@ int main(int argc, char const *argv[])
     // default datas
     int const QUANTITY_CUP = 250;
     Cup cup = {1, 0, QUANTITY_CUP};
-    Water water = {2500, 2500, 14};
+    Water water = {1000, 2500, 14};
     Cafetiere cafetiere = {water, 0, 0, 0, 0}; 
 
     possibleActions();
     int response;
     while(response != 8)
     {
-        scanf("%d", &response);
-        switch (response)
+        // Bug si on entre une caractère
+        int result = scanf("%d", &response);
+        
+        if (result != 1) {
+            printf("Entrée invalide. Veuillez entrer un nombre.\n");
+
+            // Vider le tampon d'entrée
+            while (getchar() != '\n');
+
+            continue;
+        }
+
+        if(response < 9 && response > 0)
         {
-        case 1:
-            turnOn(&cafetiere, QUANTITY_CUP);
-            break;
-        case 2:
-            addWater(&cafetiere);
-            break;
-        case 3:
-            putCup(cup);
-            break;
-        case 4:
-            selectDose(&cafetiere);   
-            break;   
-        case 5:
-            cofeeFlow(&cafetiere, &cup, QUANTITY_CUP);   
-            break;
-        case 6:
-            takeCup(cup);
-            break;
-        case 7:
-            turnOff(&cafetiere);
-            break;
-        case 8:
-            printf("Merci d'avoir utilisé cette application console.");
-            break;
-        default:
-            possibleActions();
-            break;
+            switch (response)
+            {
+                case 1:
+                    turnOn(&cafetiere, QUANTITY_CUP);
+                    break;
+                case 2:
+                    addWater(&cafetiere);
+                    break;
+                case 3:
+                    putCup(&cup);
+                    break;
+                case 4:
+                    selectDose(&cafetiere);   
+                    break;   
+                case 5:
+                    cofeeFlow(&cafetiere, &cup, QUANTITY_CUP);   
+                    break;
+                case 6:
+                    takeCup(&cup);
+                    break;
+                case 7:
+                    turnOff(&cafetiere);
+                    break;
+                case 8:
+                    printf("Merci d'avoir utilisé cette application console.");
+                    break;
+                default:
+                    // possibleActions();
+                    break;
+            }
         }
     }
 
@@ -62,24 +76,24 @@ void possibleActions()
 ");
 }
 
-void putCup(Cup cup)
+void putCup(Cup *cup)
 {
-    if(cup.isUnderCafetiere)
+    if(cup->isUnderCafetiere)
     {
         printf("La tasse est déjà dans la cafetière.\n");
     }
     else
     {
-        cup.isUnderCafetiere = 1;
+        cup->isUnderCafetiere = 1;
         printf("Vous avez mis la tasse dans la cafetière.\n");
     }
 }
 
-void takeCup(Cup cup)
+void takeCup(Cup *cup)
 {
-    if(cup.isUnderCafetiere)
+    if(cup->isUnderCafetiere)
     {
-        cup.isUnderCafetiere = 0;
+        cup->isUnderCafetiere = 0;
         printf("Vous avez pris la tasse.\n");
     }
     else
@@ -184,6 +198,7 @@ void selectDose(Cafetiere *cafetiere)
         printf("Veuillez sélectionner un nombre de dose conforme (1 ou 2).\n");
         scanf("%d", &dose);
     }
+    printf("Vous avez sélectionné %d dose(s).\n", dose);
     cafetiere->numberCofeeDose = dose;
 }
 

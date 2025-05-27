@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 typedef struct Cup Cup;
 struct Cup
@@ -30,8 +31,8 @@ struct Cafetiere
 void turnOn(Cafetiere *cafetiere, int quantityCup);
 void turnOff(Cafetiere *cafetiere);
 
-void takeCup(Cup cup);
-void putCup(Cup cup);
+void takeCup(Cup *cup);
+void putCup(Cup *cup);
 
 void waterHeating(Cafetiere *cafetiere);
 void addWater(Cafetiere *cafetiere);
