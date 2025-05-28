@@ -8,6 +8,7 @@ struct Cup
     int isUnderCafetiere;
     int QUANTITY;
 };
+void initCup(Cup *cup, int empty, int isUnderCafetiere, int QUANTITY);
 
 typedef struct Water Water;
 struct Water
@@ -16,6 +17,7 @@ struct Water
     int QUANTITY_MAX;
     int temperature;
 };
+void initWater(Water *water, int quantity, int QUANTITY_MAX, int temperature);
 
 typedef struct Cafetiere Cafetiere;
 struct Cafetiere
@@ -26,12 +28,13 @@ struct Cafetiere
     int numberCofeeDose;
     int hasLimestone;
 };
+void initCafetiere(Cafetiere *cafetiere, Water water, int on, int numberCup, int numberCofeeDose, int hasLimestone);
 
 void turnOn(Cafetiere *cafetiere, int quantityCup);
 void turnOff(Cafetiere *cafetiere);
 
-void takeCup(Cup cup);
-void putCup(Cup cup);
+void takeCup(Cup *cup);
+void putCup(Cup *cup);
 
 void waterHeating(Cafetiere *cafetiere);
 void addWater(Cafetiere *cafetiere);

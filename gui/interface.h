@@ -8,6 +8,9 @@ HBITMAP hBitmap;
 HWND btnOnOff;
 char btnOnOffText[32]; 
 
+HWND btnputTake;
+char btnputTakeText[32]; 
+
 int const QUANTITY_CUP = 250;
 
 

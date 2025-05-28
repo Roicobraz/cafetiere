@@ -16,12 +16,6 @@
         scanf("%d", &response);
         switch (response)
         {
-        case 1:
-            turnOn(&cafetiere, QUANTITY_CUP);
-            break;
-        case 2:
-            addWater(&cafetiere);
-            break;
         case 3:
             putCup(cup);
             break;
@@ -33,9 +27,6 @@
             break;
         case 6:
             takeCup(cup);
-            break;
-        case 7:
-            turnOff(&cafetiere);
             break;
         case 8:
             printf("Merci d'avoir utilisé cette application console.");
@@ -49,24 +40,47 @@
     return 0;
 }*/
 
-void putCup(Cup cup)
+void initCup(Cup *cup, int isempty, int isUnderCafetiere, int quantityCup)
 {
-    if(cup.isUnderCafetiere)
+    cup->empty = isempty;
+    cup->isUnderCafetiere = isUnderCafetiere;
+    cup->QUANTITY = quantityCup;
+}
+
+void initWater(Water *water, int quantity, int quantityMax, int temperature)
+{
+    water->quantity = quantity;
+    water->QUANTITY_MAX = quantityMax;
+    water->temperature = temperature;
+}
+
+void initCafetiere(Cafetiere *cafetiere, Water water, int on, int numberCup, int numberCofeeDose, int hasLimestone)
+{
+    cafetiere->water = water;
+    cafetiere->on = on;
+    cafetiere->numberCup = numberCup;
+    cafetiere->numberCofeeDose = numberCofeeDose;
+    cafetiere->hasLimestone = hasLimestone;
+}
+
+void putCup(Cup *cup)
+{
+    if(cup->isUnderCafetiere)
     {
         printf("La tasse est déjà dans la cafetière.\n");
     }
     else
     {
-        cup.isUnderCafetiere = 1;
+        cup->isUnderCafetiere = 1;
         printf("Vous avez mis la tasse dans la cafetière.\n");
     }
 }
 
-void takeCup(Cup cup)
+void takeCup(Cup *cup)
 {
-    if(cup.isUnderCafetiere)
+    if(cup->isUnderCafetiere)
     {
-        cup.isUnderCafetiere = 0;
+        cup->isUnderCafetiere = 0;
         printf("Vous avez pris la tasse.\n");
     }
     else
@@ -88,7 +102,7 @@ void turnOn(Cafetiere *cafetiere, int quantityCup)
 
         if(cafetiere->water.quantity >= quantityCup)
         {
-            // waterHeating(cafetiere);
+            waterHeating(cafetiere);
         }
         else
         {
