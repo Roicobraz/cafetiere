@@ -1,45 +1,5 @@
 #include "functions.h"
 
-
-/*int main(int argc, char const *argv[])
-{
-    // default datas
-    int const QUANTITY_CUP = 250;
-    Cup cup = {1, 0, QUANTITY_CUP};
-    Water water = {2500, 2500, 14};
-    Cafetiere cafetiere = {water, 0, 0, 0, 0}; 
-
-    possibleActions();
-    int response;
-    while(response != 8)
-    {
-        scanf("%d", &response);
-        switch (response)
-        {
-        case 3:
-            putCup(cup);
-            break;
-        case 4:
-            selectDose(&cafetiere);   
-            break;   
-        case 5:
-            cofeeFlow(&cafetiere, &cup, QUANTITY_CUP);   
-            break;
-        case 6:
-            takeCup(cup);
-            break;
-        case 8:
-            printf("Merci d'avoir utilisé cette application console.");
-            break;
-        default:
-            possibleActions();
-            break;
-        }
-    }
-
-    return 0;
-}*/
-
 void initCup(Cup *cup, int isempty, int isUnderCafetiere, int quantityCup)
 {
     cup->empty = isempty;
@@ -106,9 +66,9 @@ void turnOn(Cafetiere *cafetiere, int quantityCup)
         }
         else
         {
-            printf("Vous devez ajouter de l'eau.\n");
-            addWater(cafetiere);
-            waterHeating(cafetiere);
+            // printf("Vous devez ajouter de l'eau.\n");
+            // addWater(cafetiere);
+            // waterHeating(cafetiere);
         }
     }
 }
@@ -140,37 +100,15 @@ void waterHeating(Cafetiere *cafetiere)
     }
 }
 
-void addWater(Cafetiere *cafetiere)
+void addWater(Cafetiere *cafetiere, int quantity)
 {
-    char response[4];
-    int waterDose;
-    printf("Voulez-vous remplir entièrement le réservoir d'eau? (O/N)\n");
-    scanf("%s", &response);
-
-    if(strcmp(response, "o") == 0 || strcmp(response, "O") == 0)
+    if(quantity >= 2500)
     {
-        waterDose = cafetiere->water.QUANTITY_MAX - cafetiere->water.quantity;
-    }
-    else if(strcmp(response, "n") == 0 || strcmp(response, "N") == 0)
-    {
-        printf("De combien de millilitres?\n");
-        scanf("%d", &waterDose);
-    }
-
-    if((waterDose+cafetiere->water.quantity) >= cafetiere->water.QUANTITY_MAX)
-    {
-        waterDose = cafetiere->water.QUANTITY_MAX - cafetiere->water.quantity;
-        cafetiere->water.quantity = cafetiere->water.QUANTITY_MAX;
+        cafetiere->water.quantity = 2500;
     }
     else
     {
-        cafetiere->water.quantity += waterDose;
-    }
-    printf("Vous rajoutez %d ml d'eau.\n", waterDose);
-
-    if(cafetiere->water.quantity == cafetiere->water.QUANTITY_MAX)
-    {
-        printf("Le réservoir d'eau est entièrement rempli.\n");
+        cafetiere->water.quantity += quantity;
     }
 }
 

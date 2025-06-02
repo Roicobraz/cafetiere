@@ -13,8 +13,8 @@ void initCup(Cup *cup, int empty, int isUnderCafetiere, int QUANTITY);
 typedef struct Water Water;
 struct Water
 {
-    int quantity;
-    int QUANTITY_MAX;
+    unsigned int quantity;
+    unsigned int QUANTITY_MAX;
     int temperature;
 };
 void initWater(Water *water, int quantity, int QUANTITY_MAX, int temperature);
@@ -37,7 +37,7 @@ void takeCup(Cup *cup);
 void putCup(Cup *cup);
 
 void waterHeating(Cafetiere *cafetiere);
-void addWater(Cafetiere *cafetiere);
+void addWater(Cafetiere *cafetiere, int quantity);
 
 void selectDose(Cafetiere *cafetiere);
 void cofeeFlow(Cafetiere *cafetiere, Cup *cup, int const QUANTITY_CUP);

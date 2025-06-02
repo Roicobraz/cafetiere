@@ -1,14 +1,9 @@
 #include "gui/interface.c"
-
-LRESULT CALLBACK MainWndProc(HWND, UINT, WPARAM, LPARAM);
+#include "gui/addWater.c"
 
 int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-    HWND hwnd;
-    MSG msg;
     WNDCLASS wc;
-    HRGN hrgn;
-
     wc.style = 0;
     wc.lpfnWndProc = MainWndProc;
     wc.cbClsExtra = 0;
@@ -18,14 +13,12 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     wc.hCursor = LoadCursor(NULL, IDC_ARROW);
     wc.hbrBackground = (HBRUSH)(1 + COLOR_BTNFACE);
     wc.lpszMenuName =  NULL;
-    wc.lpszClassName = "MaWinClass";
+    wc.lpszClassName = "MainWindow";
 
     if(!RegisterClass(&wc)) return FALSE;
 
-    hBitmap = (HBITMAP)LoadImage(NULL, "medias/img/cafetiere.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
-
     // Création de la fenêtre
-    hwnd = CreateWindow("MaWinClass", "Titre", WS_OVERLAPPEDWINDOW | WS_VISIBLE,
+    HWND hwnd = CreateWindow("MainWindow", "Cafetière", WS_OVERLAPPEDWINDOW | WS_VISIBLE,
                                    CW_USEDEFAULT, CW_USEDEFAULT, 600, 390,
                                                    NULL, NULL, hinstance, NULL);
 
@@ -34,6 +27,14 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     ShowWindow(hwnd, nCmdShow);
     UpdateWindow(hwnd);
 
+    /**
+     * Console pour les tests à enlever
+     */
+    // AllocConsole();
+    // freopen("CONOUT$", "w", stdout);
+    /*--------------------------------------------------*/
+
+    MSG msg;
     while (GetMessage(&msg, NULL, 0, 0))
     {
         TranslateMessage(&msg);
@@ -53,7 +54,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         case WM_CREATE:
         {
             initCup(&cup, 1, 0, QUANTITY_CUP);
-            initWater(&water, 1000, 2500, 14);
+            initWater(&water, 1000, FULL_WATER, 14);
             initCafetiere(&cafetiere, water, 0, 0, 0, 0);
 
             strcpy(btnOnOffText, "Allumer la cafetière");
@@ -63,75 +64,71 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             int initPosY = 10;
             int marginY = 5;
 
-            btnOnOff = CreateWindow("BUTTON", btnOnOffText, WS_CHILD | WS_VISIBLE, posX, initPosY, 150, HEIGHT_CHAR, hwnd, (HMENU)1, hInstance, NULL);
-            CreateWindow("BUTTON", "Ajouter de l'eau", WS_CHILD | WS_VISIBLE, posX, initPosY+(marginY+HEIGHT_CHAR)*1, 150, HEIGHT_CHAR, hwnd, (HMENU)2, hInstance, NULL);
-            btnputTake = CreateWindow("BUTTON", btnputTakeText, WS_CHILD | WS_VISIBLE, posX, initPosY+(marginY+HEIGHT_CHAR)*2, 150, HEIGHT_CHAR, hwnd, (HMENU)3, hInstance, NULL);
-            CreateWindow("BUTTON", "Dose", WS_CHILD | WS_VISIBLE, posX, initPosY+(marginY+HEIGHT_CHAR)*3, 150, HEIGHT_CHAR, hwnd, (HMENU)4, hInstance, NULL);
 
+            btnOnOff = CreateWindow("BUTTON", btnOnOffText, WS_CHILD | WS_VISIBLE, posX, initPosY, 150, HEIGHT_CHAR, hwnd, (HMENU)1, hInstance, NULL);
+            
+            btnWater = CreateWindow("BUTTON", "Ajouter de l'eau", WS_CHILD | WS_VISIBLE, posX, initPosY+(marginY+HEIGHT_CHAR)*1, 150, HEIGHT_CHAR, hwnd, (HMENU)2, hInstance, NULL);
+            if(cafetiere.water.quantity == cafetiere.water.QUANTITY_MAX)
+            {
+                Button_Enable(btnWater, 0);
+            }
+
+            btnputTake = CreateWindow("BUTTON", btnputTakeText, WS_CHILD | WS_VISIBLE, posX, initPosY+(marginY+HEIGHT_CHAR)*2, 150, HEIGHT_CHAR, hwnd, (HMENU)3, hInstance, NULL);
+            
+            CreateWindow("STATIC", "Sélection de la dose de café", WS_CHILD | WS_VISIBLE, posX, initPosY+(marginY+HEIGHT_CHAR)*3, 200, HEIGHT_CHAR, hwnd, NULL, hInstance, NULL);
+
+            CreateWindow("BUTTON", "1 dose", WS_CHILD | WS_VISIBLE, posX, initPosY+(marginY+HEIGHT_CHAR)*4, 70, HEIGHT_CHAR, hwnd, (HMENU)4, hInstance, NULL);
+            CreateWindow("BUTTON", "2 doses", WS_CHILD | WS_VISIBLE, posX+80, initPosY+(marginY+HEIGHT_CHAR)*4, 70, HEIGHT_CHAR, hwnd, (HMENU)4, hInstance, NULL);
             return 0;
         }
         case WM_PAINT:
         {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hwnd, &ps);
-
-            HDC hdcMem = CreateCompatibleDC(hdc);
-            SelectObject(hdcMem, hBitmap);
-
-            BITMAP bmp;
-            GetObject(hBitmap, sizeof(BITMAP), &bmp);
-
-            BitBlt(hdc, 0, 0, bmp.bmWidth, bmp.bmHeight, hdcMem, 0, 0, SRCCOPY);
-
-            DeleteDC(hdcMem);
-            EndPaint(hwnd, &ps);
+            hBitmap = addBitmap(hwnd, "medias/img/cafetiere.bmp");
             return 0;
         }
         case WM_COMMAND:
         {
-            /**
-             * Console pour les tests à enlever
-             */
-            AllocConsole();
-            freopen("CONOUT$", "w", stdout);
-            /*--------------------------------------------------*/
-
-            switch(LOWORD(wParam))
+            if (HIWORD(wParam) == BN_CLICKED)
             {
-                case 1:
+                switch(LOWORD(wParam))
                 {
-                    if (HIWORD(wParam) == BN_CLICKED)
+                    // On/Off 
+                    case 1:
                     {
                         turnOnOff(&cafetiere, QUANTITY_CUP, btnOnOff, btnOnOffText);
-                    }
-                    break;
-                } 
-                case 2:
-                {
-                    if (HIWORD(wParam) == BN_CLICKED)
+                        break;
+                    } 
+                    // Ajout de l'eau
+                    case 2:
                     {
-                        addWater(&cafetiere);
-                        // afficher une nouvelle fenetre qui demande le comment on veux faire pour l'ajout de l'eau
-                    }
-                    break;
-                }  
-                case 3:
-                {
-                    if (HIWORD(wParam) == BN_CLICKED)
+                        int test = MessageBox(hwnd, "Voulez-vous remplir entièrement le réservoir d'eau ?", "Ajout d'eau", MB_YESNO);
+
+                        if(test == 6)
+                        {
+                            addWater(&cafetiere, FULL_WATER);
+                        }
+                        else if(test == 7) 
+                        {
+                            winAddWater(hInstance);
+                        }
+                        
+                        Button_Enable(btnWater, cafetiere.water.quantity != cafetiere.water.QUANTITY_MAX);
+                        printf("%d", cafetiere.water.quantity);
+                        break;
+                    }  
+                    // Prendre / mettre la tasse
+                    case 3:
                     {
                         putTakeCup(&cup, btnputTake, btnputTakeText);
-                    }
-                    break;
-                }  
-                case 4:
-                {
-                    // HIWORD(wParam) = Raison du message (notification)
-                    if (HIWORD(wParam) == BN_CLICKED)
+                        break;
+                    }  
+                    // Sélection de la dose de café
+                    case 4:
                     {
-                        turnOnOff(&cafetiere, QUANTITY_CUP, btnOnOff, btnOnOffText);
-                    }
-                    break;
-                } 
+                        // printf("Sélection de dose");
+                        break;
+                    } 
+                }
             }
             return 0;
         }
