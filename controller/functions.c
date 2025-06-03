@@ -64,12 +64,6 @@ void turnOn(Cafetiere *cafetiere, int quantityCup)
         {
             waterHeating(cafetiere);
         }
-        else
-        {
-            // printf("Vous devez ajouter de l'eau.\n");
-            // addWater(cafetiere);
-            // waterHeating(cafetiere);
-        }
     }
 }
 
@@ -112,42 +106,17 @@ void addWater(Cafetiere *cafetiere, int quantity)
     }
 }
 
-void selectDose(Cafetiere *cafetiere)
+void selectDose(Cafetiere *cafetiere, int dose)
 {
-    int dose;
-    printf("Combien de dose voulez-vous? 1 ou 2?\n");
-    scanf("%d", &dose);
-    while(dose != 1 && dose != 2)
-    {
-        printf("Veuillez sélectionner un nombre de dose conforme (1 ou 2).\n");
-        scanf("%d", &dose);
-    }
     cafetiere->numberCofeeDose = dose;
 }
 
-void cofeeFlow(Cafetiere *cafetiere, Cup *cup, int const QUANTITY_CUP)
+void cofeeFlow(Cafetiere *cafetiere, Cup *cup, int dose)
 {
     if(cafetiere->water.temperature == 100)
     {
-        if(cafetiere->numberCofeeDose == 0)
-        {
-            printf("Veuillez choisir une dose pour votre café.\n");
-            selectDose(cafetiere);
-        }
-        printf("Le café coule.\n");
-        sleep(2);
-        cafetiere->water.quantity -= cafetiere->numberCofeeDose*QUANTITY_CUP;
-        if(cup->isUnderCafetiere)
-        {
-            printf("Le café est prêt.\n");
-        }
-        else
-        {
-            printf("Bah bravo, vous en avez mis partout... Pensez à mettre une tasse la prochaine fois.\n");
-        }
-    }
-    else 
-    {
-        printf("Veuillez chauffer l'eau avant.\n");
+        selectDose(cafetiere, dose);
+
+        cafetiere->water.quantity -= cafetiere->numberCofeeDose*cup->QUANTITY;
     }
 }

@@ -68,17 +68,18 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             btnOnOff = CreateWindow("BUTTON", btnOnOffText, WS_CHILD | WS_VISIBLE, posX, initPosY, 150, HEIGHT_CHAR, hwnd, (HMENU)1, hInstance, NULL);
             
             btnWater = CreateWindow("BUTTON", "Ajouter de l'eau", WS_CHILD | WS_VISIBLE, posX, initPosY+(marginY+HEIGHT_CHAR)*1, 150, HEIGHT_CHAR, hwnd, (HMENU)2, hInstance, NULL);
-            if(cafetiere.water.quantity == cafetiere.water.QUANTITY_MAX)
-            {
-                Button_Enable(btnWater, 0);
-            }
+            
 
             btnputTake = CreateWindow("BUTTON", btnputTakeText, WS_CHILD | WS_VISIBLE, posX, initPosY+(marginY+HEIGHT_CHAR)*2, 150, HEIGHT_CHAR, hwnd, (HMENU)3, hInstance, NULL);
             
             CreateWindow("STATIC", "Sélection de la dose de café", WS_CHILD | WS_VISIBLE, posX, initPosY+(marginY+HEIGHT_CHAR)*3, 200, HEIGHT_CHAR, hwnd, NULL, hInstance, NULL);
 
-            CreateWindow("BUTTON", "1 dose", WS_CHILD | WS_VISIBLE, posX, initPosY+(marginY+HEIGHT_CHAR)*4, 70, HEIGHT_CHAR, hwnd, (HMENU)4, hInstance, NULL);
-            CreateWindow("BUTTON", "2 doses", WS_CHILD | WS_VISIBLE, posX+80, initPosY+(marginY+HEIGHT_CHAR)*4, 70, HEIGHT_CHAR, hwnd, (HMENU)4, hInstance, NULL);
+            btnDose1 = CreateWindow("BUTTON", "1 dose", WS_CHILD | WS_VISIBLE, posX, initPosY+(marginY+HEIGHT_CHAR)*4, 70, HEIGHT_CHAR, hwnd, (HMENU)4, hInstance, NULL);
+            btnDose2 = CreateWindow("BUTTON", "2 doses", WS_CHILD | WS_VISIBLE, posX+80, initPosY+(marginY+HEIGHT_CHAR)*4, 70, HEIGHT_CHAR, hwnd, (HMENU)5, hInstance, NULL);
+            Button_Enable(btnWater, cafetiere.water.quantity != cafetiere.water.QUANTITY_MAX);
+            Button_Enable(btnDose1, cafetiere.water.quantity >= cup.QUANTITY);
+            Button_Enable(btnDose2, cafetiere.water.quantity >= (cup.QUANTITY*2));
+            
             return 0;
         }
         case WM_PAINT:
@@ -111,9 +112,6 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                         {
                             winAddWater(hInstance);
                         }
-                        
-                        Button_Enable(btnWater, cafetiere.water.quantity != cafetiere.water.QUANTITY_MAX);
-                        printf("%d", cafetiere.water.quantity);
                         break;
                     }  
                     // Prendre / mettre la tasse
@@ -125,11 +123,19 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                     // Sélection de la dose de café
                     case 4:
                     {
-                        // printf("Sélection de dose");
+                        cofeeFlow(&cafetiere, &cup, 1);
+                        break;
+                    }
+                    case 5:
+                    {
+                        cofeeFlow(&cafetiere, &cup, 2);
                         break;
                     } 
                 }
             }
+            Button_Enable(btnWater, cafetiere.water.quantity != cafetiere.water.QUANTITY_MAX);
+            Button_Enable(btnDose1, cafetiere.water.quantity >= cup.QUANTITY);
+            Button_Enable(btnDose2, cafetiere.water.quantity >= (cup.QUANTITY*2));
             return 0;
         }
         case WM_DESTROY:

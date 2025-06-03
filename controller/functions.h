@@ -39,7 +39,7 @@ void putCup(Cup *cup);
 void waterHeating(Cafetiere *cafetiere);
 void addWater(Cafetiere *cafetiere, int quantity);
 
-void selectDose(Cafetiere *cafetiere);
+void selectDose(Cafetiere *cafetiere, int dose);
 void cofeeFlow(Cafetiere *cafetiere, Cup *cup, int const QUANTITY_CUP);
 
 void possibleActions();
