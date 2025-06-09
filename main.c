@@ -27,13 +27,6 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     ShowWindow(hwnd, nCmdShow);
     UpdateWindow(hwnd);
 
-    /**
-     * Console pour les tests à enlever
-     */
-    // AllocConsole();
-    // freopen("CONOUT$", "w", stdout);
-    /*--------------------------------------------------*/
-
     MSG msg;
     while (GetMessage(&msg, NULL, 0, 0))
     {
@@ -43,7 +36,7 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     return msg.wParam;
 }
-/****************************************************************************/
+
 
 LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -53,12 +46,19 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
         case WM_CREATE:
         {
-            logFile = NULL;
+
+            /**
+             * Console pour les tests à enlever
+             */
+            AllocConsole();
+            freopen("CONOUT$", "w", stdout);
+            /*--------------------------------------------------*/
+
+            initDatas();
 
             initCup(&cup, 1, 0, QUANTITY_CUP);
-            initWater(&water, 1000, FULL_WATER, 14);
+            initWater(&water, getWater(), FULL_WATER, 14);
             initCafetiere(&cafetiere, water, 0, 0, 0, 0);
-
             strcpy(btnOnOffText, "Allumer la cafetière");
             strcpy(btnputTakeText, "Mettre une tasse");
 

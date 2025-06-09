@@ -31,9 +31,6 @@ struct Cafetiere
     int hasLimestone;
 };
 
-FILE* logFile;
-void addLog(char string[]);
-
 void initCafetiere(Cafetiere *cafetiere, Water water, int on, int numberCup, int numberCofeeDose, int hasLimestone);
 
 void turnOn(Cafetiere *cafetiere, int quantityCup);
@@ -48,4 +45,11 @@ void addWater(Cafetiere *cafetiere, int quantity);
 void selectDose(Cafetiere *cafetiere, int dose);
 void cofeeFlow(Cafetiere *cafetiere, Cup *cup, int const QUANTITY_CUP);
 
-void possibleActions();
+
+void addLog(char string[]);
+
+void initDatas();
+int getWater();
+int setWater();
+
+int getCup();

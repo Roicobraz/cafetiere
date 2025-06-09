@@ -1,5 +1,9 @@
 #include "functions.h"
 
+#define LOG_FILE "log.txt"
+#define DATA_FILE "datas.dat"
+#define TAILLE_MAX 100
+
 void initCup(Cup *cup, int isempty, int isUnderCafetiere, int quantityCup)
 {
     cup->empty = isempty;
@@ -127,17 +131,26 @@ void selectDose(Cafetiere *cafetiere, int dose)
 
 void cofeeFlow(Cafetiere *cafetiere, Cup *cup, int dose)
 {
-    if(cafetiere->water.temperature == 100)
+    if(cafetiere->water.temperature == 100 && cafetiere->on)
     {
         selectDose(cafetiere, dose);
-
         cafetiere->water.quantity -= cafetiere->numberCofeeDose*cup->QUANTITY;
-        addLog("Le café coule.\n");
+
+        if(cup->isUnderCafetiere)
+        {
+            addLog("Le café coule.\n");
+        }
+        else
+        {
+            addLog("Vous n'avez pas mis de tasse sous la cafetière, le café coule partout.\n");
+        }
     }
 }
 
 void addLog(char string[])
 {
+    FILE *logFile = NULL;
+
     time_t raw;
     time(&raw);
 
@@ -147,11 +160,81 @@ void addLog(char string[])
     char current_time [124];
     strftime(current_time, sizeof(current_time), "%a %D - %X ", time_ptr);
 
-    logFile = fopen("log.txt", "a");
+    logFile = fopen(LOG_FILE, "a");
     if(logFile != NULL)
     {
         strcat(current_time, string);
         fputs(current_time, logFile);
     }
     fclose(logFile);
+}
+
+void initDatas()
+{
+    if (access(DATA_FILE, F_OK) != 0)
+    {
+        FILE *datasFile = NULL;
+        datasFile = fopen(DATA_FILE, "a");
+
+        if(datasFile != NULL)
+        {
+            char defaultDatas[] = "water quantity : 10\ncup quantity : 250";
+            fputs(defaultDatas, datasFile);
+        }
+        
+        fclose(datasFile);
+    }
+}
+
+int getWater()
+{   
+    int water_quantity = 0;
+    char chaine[TAILLE_MAX] = "";
+    FILE *datasFile = NULL;
+    datasFile = fopen(DATA_FILE, "rb");
+
+    if(datasFile != NULL)
+    {
+        char *strToken = NULL;
+        int lineFind = 0;
+        while (fgets(chaine, TAILLE_MAX, datasFile)) 
+        {
+            strToken = strtok(chaine, ":");
+            if(strcmp(strToken, "water quantity"))
+            {
+                lineFind = 1;
+                water_quantity = 1;
+                break;
+            }
+        }
+
+        if(lineFind == 1)
+        {
+            strToken = strtok (NULL, strToken);
+            water_quantity = atoi(strToken);
+            printf("%d", water_quantity); 
+        }
+    }
+    fclose(datasFile);
+
+    return water_quantity;
+}
+
+int setWater(int quantityWater)
+{
+    FILE *datasFile = NULL;
+    datasFile = fopen(DATA_FILE, "wb");
+
+    if(datasFile != NULL)
+    {
+
+    }
+    fclose(datasFile);
+    return 1;
+    return 0;
+}
+
+int getCup()
+{
+    return 0;
 }
