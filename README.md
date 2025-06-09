@@ -1,8 +1,8 @@
 # Cafetière
 
 > [!NOTE]
-> V1.0 -
-> 22/05/2025 -
+> V1.1 -
+> 09/06/2025 -
 > Roicobraz
 
 Logiciel émulant le principe d'une cafetière.  

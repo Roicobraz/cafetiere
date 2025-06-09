@@ -27,12 +27,12 @@ void putCup(Cup *cup)
 {
     if(cup->isUnderCafetiere)
     {
-        printf("La tasse est déjà dans la cafetière.\n");
+        addLog("La tasse est déjà dans la cafetière.\n");
     }
     else
     {
         cup->isUnderCafetiere = 1;
-        printf("Vous avez mis la tasse dans la cafetière.\n");
+        addLog("Vous avez mis la tasse dans la cafetière.\n");
     }
 }
 
@@ -41,11 +41,11 @@ void takeCup(Cup *cup)
     if(cup->isUnderCafetiere)
     {
         cup->isUnderCafetiere = 0;
-        printf("Vous avez pris la tasse.\n");
+        addLog("Vous avez pris la tasse.\n");
     }
     else
     {
-        printf("Il n'y a pas de tasse dans la cafetière.\n");
+        addLog("Il n'y a pas de tasse dans la cafetière.\n");
     }
 }
 
@@ -53,12 +53,12 @@ void turnOn(Cafetiere *cafetiere, int quantityCup)
 {
     if(cafetiere->on)
     {
-        printf("La cafetière est déjà allumée.\n");
+        addLog("La cafetière est déjà allumée.\n");
     }
     else
     {
         cafetiere->on = 1;
-        printf("La cafetière est allumée.\n");
+        addLog("La cafetière est allumée.\n");
 
         if(cafetiere->water.quantity >= quantityCup)
         {
@@ -72,11 +72,11 @@ void turnOff(Cafetiere *cafetiere)
     if(cafetiere->on)
     {
         cafetiere->on = 0;
-        printf("La cafetière est éteinte.\n");
+        addLog("La cafetière est éteinte.\n");
     }
     else
     {
-        printf("La cafetière est déjà éteinte.\n");
+        addLog("La cafetière est déjà éteinte.\n");
     }
 }
 
@@ -84,13 +84,13 @@ void waterHeating(Cafetiere *cafetiere)
 {
     if(cafetiere->water.temperature == 100)
     {
-        printf("L'eau est déjà chaude.\n");
+        addLog("L'eau est déjà chaude.\n");
     }
     else
     {
-        printf("L'eau chauffe.\n");
+        addLog("L'eau chauffe.\n");
         cafetiere->water.temperature = 100;
-        printf("L'eau est chaude.\n");
+        addLog("L'eau est chaude.\n");
     }
 }
 
@@ -99,16 +99,30 @@ void addWater(Cafetiere *cafetiere, int quantity)
     if(quantity >= 2500)
     {
         cafetiere->water.quantity = 2500;
+        addLog("Le réservoir d'eau est plein.\n");
     }
     else
     {
         cafetiere->water.quantity += quantity;
+        char WaterStr[31];
+        itoa(quantity, WaterStr, 10);
+
+        char logStr[] = "ml ont été ajouté.\n";
+        strcat(WaterStr, logStr);
+        addLog(WaterStr);
     }
 }
 
 void selectDose(Cafetiere *cafetiere, int dose)
 {
     cafetiere->numberCofeeDose = dose;
+
+    char doseStr[2];
+    char logStr[] = "Le nombre de dose sélectionné est ";
+    itoa(cafetiere->numberCofeeDose, doseStr, 10);
+    strcat(logStr, doseStr);
+    strcat(logStr, ".\n");
+    addLog(logStr);
 }
 
 void cofeeFlow(Cafetiere *cafetiere, Cup *cup, int dose)
@@ -118,5 +132,26 @@ void cofeeFlow(Cafetiere *cafetiere, Cup *cup, int dose)
         selectDose(cafetiere, dose);
 
         cafetiere->water.quantity -= cafetiere->numberCofeeDose*cup->QUANTITY;
+        addLog("Le café coule.\n");
     }
+}
+
+void addLog(char string[])
+{
+    time_t raw;
+    time(&raw);
+
+    struct tm *time_ptr;
+    time_ptr = localtime(&raw);
+
+    char current_time [124];
+    strftime(current_time, sizeof(current_time), "%a %D - %X ", time_ptr);
+
+    logFile = fopen("log.txt", "a");
+    if(logFile != NULL)
+    {
+        strcat(current_time, string);
+        fputs(current_time, logFile);
+    }
+    fclose(logFile);
 }

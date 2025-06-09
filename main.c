@@ -53,6 +53,8 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
         case WM_CREATE:
         {
+            logFile = NULL;
+
             initCup(&cup, 1, 0, QUANTITY_CUP);
             initWater(&water, 1000, FULL_WATER, 14);
             initCafetiere(&cafetiere, water, 0, 0, 0, 0);
@@ -102,13 +104,13 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                     // Ajout de l'eau
                     case 2:
                     {
-                        int test = MessageBox(hwnd, "Voulez-vous remplir entièrement le réservoir d'eau ?", "Ajout d'eau", MB_YESNO);
+                        int responseMB = MessageBox(hwnd, "Voulez-vous remplir entièrement le réservoir d'eau ?", "Ajout d'eau", MB_YESNO);
 
-                        if(test == 6)
+                        if(responseMB == 6)
                         {
                             addWater(&cafetiere, FULL_WATER);
                         }
-                        else if(test == 7) 
+                        else if(responseMB == 7) 
                         {
                             winAddWater(hInstance);
                         }
@@ -140,6 +142,10 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         }
         case WM_DESTROY:
         {
+            if(cafetiere.on)
+            {
+                turnOff(&cafetiere);
+            }
             DeleteObject(hBitmap);
             PostQuitMessage(0);
             return 0;

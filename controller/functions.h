@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <time.h>
 
 typedef struct Cup Cup;
 struct Cup
@@ -28,6 +30,10 @@ struct Cafetiere
     int numberCofeeDose;
     int hasLimestone;
 };
+
+FILE* logFile;
+void addLog(char string[]);
+
 void initCafetiere(Cafetiere *cafetiere, Water water, int on, int numberCup, int numberCofeeDose, int hasLimestone);
 
 void turnOn(Cafetiere *cafetiere, int quantityCup);

@@ -32,7 +32,6 @@ HWND addWaterWindow;
 HWND btnDose1;
 HWND btnDose2;
 
-
 int const QUANTITY_CUP = 250;
 
 
